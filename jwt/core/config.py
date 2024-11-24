@@ -2,8 +2,6 @@ import os                                   # 운영체제와 상호작용 (파�
 from pathlib import Path                    # 파일 시스템 경로를 객체지향적으로 다룰 수 있게 해줌
 from dotenv import load_dotenv              # 파일에 정의된 환경변수를 app의 환경변수로 로드
 from pydantic_settings import BaseSettings  # 데이터 검증 & 변환
-from urllib.parse import quote_plus         # URL 인코딩
-
 
 env_path = Path(".")/".env"
 load_dotenv(dotenv_path=env_path)

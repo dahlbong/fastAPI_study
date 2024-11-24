@@ -1,17 +1,34 @@
-from sqlalchemy import Boolean, Column, DateTime, Integer, String
+from sqlalchemy.ext.automap import automap_base
+from core.db import engine
 
-from core.db import Base
+# 기존 테이블을 자동으로 매핑하는 Base 클래스 생성 & 테이블 구조 반영
+AutomapBase = automap_base()
+AutomapBase.prepare(engine, reflect=True)
 
-class UserModel(Base):
-    __tablename__ = "users"
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String(255), unique=True, index=True)
-
-    username = Column(String(16), unique=True, index=True)
-    password = Column(String(100))
-    level = Column(String(100), nullable=False, default="guest")
+# users 테이블에 대한 모델 클래스 생성
+class UserModel(AutomapBase):
+    __tablename__ = 'users'
     
-    is_active = Column(Boolean, default=False)
-    is_verified = Column(Boolean, default=False)
-    verified_at = Column(DateTime, nullable=True, default=None)
-    registered_at = Column(DateTime, nullable=True, default=None)
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'email': self.email,
+            'username': self.username,
+            'level': self.level,
+            'is_active': self.is_active,
+            'is_verified': self.is_verified,
+            'verified_at': self.verified_at,
+            'registered_at': self.registered_at
+        }
+    
+    @classmethod
+    def from_dict(cls, data):
+        return cls(**data)
+    
+    @property
+    def is_admin(self):
+        return self.level == 'admin'
+    
+    @property
+    def is_guest(self):
+        return self.level == 'guest'
