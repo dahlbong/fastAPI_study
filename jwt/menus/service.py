@@ -19,10 +19,10 @@ def get_menu_list(db: Session, skip: int = 0, limit: int = 100) -> List[MenuResp
     return [MenuResponseSchema.from_orm(item) for item in menu_items]
 
 def get_menu_by_name(db: Session, menu_name: str) -> MenuResponseSchema:
-    menu_item = db.query(MenuModel).filter(MenuModel.name == menu_name).first()
+    menu_item = db.query(MenuModel).filter(MenuModel.name == menu_name, MenuModel.is_deleted == False).first()
     if not menu_item:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="등록되지 않은 메뉴입니다.")
-    return MenuResponseSchema.from_orm(menu_item)
+    return menu_item
 
 def update_menu(db: Session, menu_name: str, menu_data: MenuUpdateSchema) -> None:
     menu_item = get_menu_by_name(db, menu_name)
@@ -46,3 +46,4 @@ def delete_menu(db: Session, menu_name: str) -> None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="not found")
     menu_item.is_deleted = True
     db.commit()
+    db.refresh(menu_item)
