@@ -1,21 +1,19 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import exists
 from fastapi import HTTPException, status
-from typing import List, Optional
+from typing import List
 
 from menus.models import MenuModel
 from menus.schemas import MenuCreateSchema, MenuUpdateSchema, MenuResponseSchema
 
-def _get_menu_by_name(db: Session, menu_name: str) -> Optional[MenuModel]: # 헬퍼메서드
-    return (
-        db.query(MenuModel)
-        .filter(
-            MenuModel.name == menu_name,
-            MenuModel.is_deleted == False).first()
-    )
+def _menu_exists(db: Session, menu_name: str) -> bool:  # 헬퍼메서드
+    return db.query(exists().where(
+        MenuModel.name == menu_name,
+        MenuModel.is_deleted == False
+    )).scalar()
 
-def create_menu(db: Session, menu_data: MenuCreateSchema) -> MenuResponseSchema:
-    """Create a new menu item."""
-    if _get_menu_by_name(db, menu_data.name):
+def create_menu(db: Session, menu_data: MenuCreateSchema) -> None:
+    if _menu_exists(db, menu_data.name):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="이미 등록된 메뉴입니다."
@@ -24,9 +22,6 @@ def create_menu(db: Session, menu_data: MenuCreateSchema) -> MenuResponseSchema:
     new_item = MenuModel(**menu_data.dict())
     db.add(new_item)
     db.commit()
-    db.refresh(new_item)
-
-    return MenuResponseSchema.from_orm(new_item)
 
 def get_menu_list(db: Session, skip: int = 0, limit: int = 100) -> List[MenuResponseSchema]:
     """Retrieve a list of menu items."""
@@ -68,7 +63,6 @@ def update_menu(db: Session, menu_name: str, menu_data: MenuUpdateSchema) -> Men
     return MenuResponseSchema.from_orm(menu_item)
 
 def delete_menu(db: Session, menu_name: str) -> None:
-    """Soft delete a menu item."""
     menu_item = _get_menu_by_name(db, menu_name)
     if not menu_item:
         raise HTTPException(
