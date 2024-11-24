@@ -9,11 +9,9 @@ from menus.service import *
 router = APIRouter(prefix="/menu", tags=["menu"])
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-def create_menu_item(
-    menu: MenuCreateSchema,
-    db: Session = Depends(get_db)
-):
-    return create_menu(db, menu)
+def create_menu_item(menu: MenuCreateSchema, db: Session = Depends(get_db)):
+    create_menu(db, menu)
+    return {"message": "메뉴 등록이 완료되었습니다."}
 
 @router.get("/", response_model=List[MenuResponseSchema])
 def list_menu_items(
@@ -36,7 +34,7 @@ def update_menu_item(
     menu_data: MenuUpdateSchema,
     db: Session = Depends(get_db)
 ):
-    return update_menu(db, menu_name, menu_data)
+    return {"message": "업데이트가 완료되었습니다."}
 
 @router.delete("/{menu_name}", status_code=status.HTTP_200_OK, response_model=dict)
 def delete_menu_item(
