@@ -44,7 +44,5 @@ class MenuResponseSchema(BaseModel):
     fat: float
     caffeine: float
     is_deleted: bool
-    created_at: datetime
-    updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
