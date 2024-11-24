@@ -27,6 +27,6 @@ async def create_user(data: CreateUserRequest, db: Session = Depends(get_db)):
     payload = {"message": "회원가입이 완료되었습니다."}
     return JSONResponse(content=payload)
 
-@user_router.post('/me', status_code = status.HTTP_200_OK, response_model=UserResponse)
+@user_router.get('/me', status_code = status.HTTP_200_OK, response_model=UserResponse)
 def get_user_detail(request: Request):
     return request.user

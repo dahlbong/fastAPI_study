@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer
 from datetime import timedelta, datetime
 from jose import jwt, JWTError
 from starlette.authentication import AuthCredentials, UnauthenticatedUser
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 
 from core.db import get_db
 from users.models import UserModel
