@@ -1,6 +1,6 @@
-from sqlalchemy.ext.automap import automap_base
 from core.db import engine, Base
 
+# 테이블 구조 반영
 Base.prepare(engine, reflect=True)
 
 # menu 테이블에 대한 모델 클래스 생성

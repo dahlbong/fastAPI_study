@@ -1,4 +1,3 @@
-from sqlalchemy.ext.automap import automap_base
 from core.db import engine, Base
 
 # 테이블 구조 반영
