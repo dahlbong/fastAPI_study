@@ -27,8 +27,11 @@ async def create_access_token(data, expiry: timedelta):
     token = jwt.encode(payload, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
     return token
 
-async def create_refresh_token(data):
-    token = jwt.encode(data, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
+async def create_refresh_token(data, expiry: timedelta):
+    payload = data.copy()
+    expire_in = datetime.utcnow() + expiry
+    payload.update({"exp": expire_in})
+    token = jwt.encode(payload, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
     return token
 
 def get_token_payload(token):

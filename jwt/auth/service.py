@@ -59,10 +59,11 @@ async def _get_user_token(user: UserModel, refresh_token = None):
     payload = {"id": user.id}
     
     access_token_expiry = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    refresh_token_expiry = timedelta(minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES)
 
     access_token = await create_access_token(payload, access_token_expiry)
     if not refresh_token:
-        refresh_token = await create_refresh_token(payload)
+        refresh_token = await create_refresh_token(payload, refresh_token_expiry)
     return TokenResponse(
         access_token = access_token,
         refresh_token = refresh_token,

@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     JWT_SECRET: str = os.getenv('JWT_SECRET')
     JWT_ALGORITHM: str = os.getenv('JWT_ALGORITHM')
     ACCESS_TOKEN_EXPIRE_MINUTES: int = os.getenv('ACCESS_TOKEN_EXPIRES_MINUTES')
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = os.getenv('REFRESH_TOKEN_EXPIRES_MINUTES')
 
 def get_settings() -> Settings:
     return Settings()   # Settings 클래스 호출하여 새로운 객체 생성하여 반환
