@@ -33,7 +33,7 @@ def get_menu_by_name(db: Session, menu_name: str) -> MenuResponseSchema:
     return MenuResponseSchema.from_orm(menu_item)
 
 def update_menu(db: Session, menu_name: str, menu_data: MenuUpdateSchema) -> None:
-    menu_item = db.query(MenuModel).filter(MenuModel.name == menu_name)
+    menu_item = get_menu_by_name(db, menu_name)
     if not menu_item:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -52,12 +52,10 @@ def update_menu(db: Session, menu_name: str, menu_data: MenuUpdateSchema) -> Non
 
 
 def delete_menu(db: Session, menu_name: str) -> None:
-    menu_item = db.query(MenuModel).filter(MenuModel.name == menu_name)
+    menu_item = get_menu_by_name(db, menu_name)
     if not menu_item:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Menu item not found"
-        )
-
+            detail="Menu item not found")
     menu_item.is_deleted = True
     db.commit()
